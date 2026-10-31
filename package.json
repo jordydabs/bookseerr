@@ -1,0 +1,21 @@
+{
+  "name": "bookseerr",
+  "version": "4.10.0",
+  "description": "Self-hosted eBook & audiobook request manager for Chaptarr and Listenarr — search, library-based recommendations, one-click requests, approvals and Discord notifications.",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/approvals.js && node test/security.js",
+    "test:approvals": "node test/approvals.js",
+    "test:security": "node test/security.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

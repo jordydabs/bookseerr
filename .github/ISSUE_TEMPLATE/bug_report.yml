@@ -1,0 +1,56 @@
+name: Bug report
+description: Something in BookSeerr isn't working the way it should
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this.
+
+        **Please blank out API keys, passwords, your webhook URL and anything from `db.json` before pasting.**
+        A security problem? Don't file it here — see the [security policy](https://github.com/jordydabs/bookseerr/security/policy).
+  - type: input
+    id: version
+    attributes:
+      label: BookSeerr version
+      description: Shown at the bottom of the sidebar, and at `/healthz`.
+      placeholder: "4.10.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How are you running it?
+      options:
+        - Docker Compose (from this repo)
+        - Docker, another way
+        - Bare metal (npm start)
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead? Screenshots help.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to …
+        2. Click …
+        3. See …
+  - type: input
+    id: upstream
+    attributes:
+      label: Chaptarr and Listenarr versions
+      description: Only if it involves sending a request or the "In library" badge. Both are shown in the sidebar's connection indicators.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Output of `docker logs bookseerr` (or the terminal, if bare metal) from around the time it happened. Redact anything private.
+      render: shell

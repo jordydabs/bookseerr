@@ -1,0 +1,24 @@
+# Normalise line endings.
+#
+# entrypoint.sh is the container's ENTRYPOINT. If git checks it out with CRLF on a
+# Windows clone (the default when core.autocrlf=true), the kernel tries to run
+# "/bin/sh\r" and the container dies with the famously unhelpful
+#     exec /app/entrypoint.sh: no such file or directory
+# — an error that points at a file which is plainly there. Force LF for anything
+# that has to run inside the image.
+* text=auto eol=lf
+
+*.sh    text eol=lf
+Dockerfile text eol=lf
+*.yml   text eol=lf
+*.json  text eol=lf
+*.js    text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+
+# Binary assets — never touch these.
+*.png   binary
+*.ico   binary
+*.jpg   binary
+*.webp  binary

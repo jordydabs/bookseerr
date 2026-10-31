@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BookSeerr</title>
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#12131a">
+<meta name="apple-mobile-web-app-title" content="BookSeerr">
+<meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ══ TOPBAR ═══════════════════════════════════════════════ -->
+  <header class="topbar">
+    <a class="brand" href="/">
+      <svg class="brand-icon" width="28" height="28" viewBox="0 0 64 64" fill="none">
+        <rect width="64" height="64" rx="10" fill="#1e1f2e"/>
+        <path d="M14 13.5C14 10.46 16.46 8 19.5 8H47c2.76 0 5 2.24 5 5v38c0 2.76-2.24 5-5 5H19.5A5.5 5.5 0 0 1 14 50.5v-37Z" stroke="#a78bfa" stroke-width="3.2"/>
+        <path d="M22 20h20M22 28h16M22 36h18M22 44h12" stroke="#22c55e" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="brand-name">BookSeerr</div>
+        <div class="brand-tag">Ebooks &amp; Audiobooks</div>
+      </div>
+    </a>
+    <div class="topbar-right">
+      <div class="topbar-user">
+        <span class="status-dot"></span>
+        <span id="whoami">—</span>
+        <span class="topbar-divider"></span>
+        <span id="user-meta">—</span>
+      </div>
+      <button id="account-btn" class="btn btn-ghost btn-sm" title="Account &amp; password">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Account
+      </button>
+      <button id="logout-btn" class="btn btn-ghost btn-sm">Sign out</button>
+    </div>
+  </header>
+
+  <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="nav-group">
+      <div class="nav-group-label">Library</div>
+      <button class="nav active" data-page="discover">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 14.14 14.14M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Discover
+      </button>
+      <button class="nav" data-page="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Search
+      </button>
+      <button class="nav" data-page="requests">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+        My Requests
+      </button>
+    </div>
+
+    <div class="nav-group admin-only hidden">
+      <div class="nav-group-label">Admin</div>
+      <button class="nav admin-only hidden" data-page="all-requests">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        All Requests
+        <span id="req-badge" class="nav-badge hidden"></span>
+      </button>
+      <button class="nav admin-only hidden" data-page="users">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Users
+      </button>
+      <button class="nav admin-only hidden" data-page="apikeys">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        API Keys
+      </button>
+      <button class="nav admin-only hidden" data-page="settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+    </div>
+
+    <!-- Push connection widgets to bottom -->
+    <div class="sidebar-push"></div>
+
+    <!-- ── Chaptarr (eBooks &amp; authors) connection status ── -->
+    <div class="sidebar-connection">
+      <div class="conn-label">Chaptarr · eBooks</div>
+      <div class="conn-pill checking" id="conn-pill">
+        <div class="conn-indicator"></div>
+        <div class="conn-info">
+          <div class="conn-name" id="conn-name">Connecting…</div>
+          <div class="conn-version" id="conn-version"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Listenarr (audiobooks) connection status ── -->
+    <div class="sidebar-connection">
+      <div class="conn-label">Listenarr · Audiobooks</div>
+      <div class="conn-pill checking" id="conn2-pill">
+        <div class="conn-indicator"></div>
+        <div class="conn-info">
+          <div class="conn-name" id="conn2-name">Connecting…</div>
+          <div class="conn-version" id="conn2-version"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-version" id="app-version">BookSeerr</div>
+  </aside>
+
+  <!-- ══ CONTENT ══════════════════════════════════════════════ -->
+  <main class="content">
+
+    <!-- Discover -->
+    <section class="page active" id="page-discover">
+      <div class="page-head">
+        <div class="page-head-text">
+          <h1>Discover</h1>
+          <p>Picks based on what's already in your library, plus the latest and upcoming audiobooks and the all-time greats. Click any card to request it.</p>
+        </div>
+      </div>
+
+      <!-- Rows built from the library (filled by loadForYou) -->
+      <div id="for-you-rows"></div>
+
+      <div class="section-head">
+        <h2>Trending Authors</h2>
+        <div class="slider-controls">
+          <button class="slider-btn" data-target="authors-track" data-dir="-1">&#8249;</button>
+          <button class="slider-btn" data-target="authors-track" data-dir="1">&#8250;</button>
+        </div>
+      </div>
+      <div class="slider-wrap"><div class="slider-track" id="authors-track"></div></div>
+
+      <div class="section-head">
+        <h2>New &amp; Trending eBooks</h2>
+        <div class="slider-controls">
+          <button class="slider-btn" data-target="ebooks-track" data-dir="-1">&#8249;</button>
+          <button class="slider-btn" data-target="ebooks-track" data-dir="1">&#8250;</button>
+        </div>
+      </div>
+      <div class="slider-wrap"><div class="slider-track" id="ebooks-track"></div></div>
+
+      <div class="section-head">
+        <h2>Top eBooks of All Time</h2>
+        <div class="slider-controls">
+          <button class="slider-btn" data-target="top-ebooks-track" data-dir="-1">&#8249;</button>
+          <button class="slider-btn" data-target="top-ebooks-track" data-dir="1">&#8250;</button>
+        </div>
+      </div>
+      <div class="slider-wrap"><div class="slider-track" id="top-ebooks-track"></div></div>
+
+      <div class="section-head">
+        <h2>Recently Released Audiobooks</h2>
+        <div class="slider-controls">
+          <button class="slider-btn" data-target="audio-recent-track" data-dir="-1">&#8249;</button>
+          <button class="slider-btn" data-target="audio-recent-track" data-dir="1">&#8250;</button>
+        </div>
+      </div>
+      <div class="slider-wrap"><div class="slider-track" id="audio-recent-track"></div></div>
+
+      <div class="section-head">
+        <h2>Upcoming Audiobooks</h2>
+        <div class="slider-controls">
+          <button class="slider-btn" data-target="audio-upcoming-track" data-dir="-1">&#8249;</button>
+          <button class="slider-btn" data-target="audio-upcoming-track" data-dir="1">&#8250;</button>
+        </div>
+      </div>
+      <div class="slider-wrap"><div class="slider-track" id="audio-upcoming-track"></div></div>
+
+      <div class="section-head">
+        <h2>Top Audiobooks of All Time</h2>
+        <div class="slider-controls">
+          <button class="slider-btn" data-target="top-audio-track" data-dir="-1">&#8249;</button>
+          <button class="slider-btn" data-target="top-audio-track" data-dir="1">&#8250;</button>
+        </div>
+      </div>
+      <div class="slider-wrap"><div class="slider-track" id="top-audio-track"></div></div>
+    </section>
+
+    <!-- Search -->
+    <section class="page" id="page-search">
+      <div class="page-head">
+        <div class="page-head-text"><h1>Search</h1><p>Search authors and eBooks (fulfilled by Chaptarr) or audiobooks (fulfilled by Listenarr).</p></div>
+      </div>
+      <div class="searchbar">
+        <input id="search-input" class="input" placeholder="Start typing an author or title…">
+        <select id="search-type" class="input">
+          <option value="all">Everything</option>
+          <option value="authors">Authors</option>
+          <option value="books">eBooks</option>
+          <option value="audio">Audiobooks</option>
+        </select>
+        <button id="search-btn" class="btn btn-primary">Search</button>
+      </div>
+      <div id="search-results" class="grid"></div>
+    </section>
+
+    <!-- My Requests -->
+    <section class="page" id="page-requests">
+      <div class="page-head">
+        <div class="page-head-text"><h1>My Requests</h1><p>Track your sent requests — eBooks and authors go to Chaptarr, audiobooks to Listenarr.</p></div>
+      </div>
+      <div id="my-requests" class="table-wrap"></div>
+    </section>
+
+    <!-- All Requests (admin) -->
+    <section class="page admin-only hidden" id="page-all-requests">
+      <div class="page-head">
+        <div class="page-head-text"><h1>All Requests</h1><p>Admin view — requests from all users. Pending requests are waiting for your approval and haven't been sent to a downloader yet.</p></div>
+      </div>
+      <div class="stats-row" id="req-stats">
+        <button class="stat-card active" data-status="all" title="Show all requests">
+          <div class="stat-num" id="st-total">—</div><div class="stat-label">Total Requests</div>
+        </button>
+        <button class="stat-card ok" data-status="sent" title="Approved and sent to the downloader">
+          <div class="stat-num" id="st-sent">—</div><div class="stat-label">Approved</div>
+        </button>
+        <button class="stat-card warn" data-status="pending" title="Waiting for your approval">
+          <div class="stat-num" id="st-pending">—</div><div class="stat-label">Pending</div>
+        </button>
+        <button class="stat-card bad" data-status="rejected" title="Rejected by an admin">
+          <div class="stat-num" id="st-rejected">—</div><div class="stat-label">Rejected</div>
+        </button>
+        <button class="stat-card bad" data-status="error" title="Send failed — click Retry on the row">
+          <div class="stat-num" id="st-error">—</div><div class="stat-label">Errors</div>
+        </button>
+      </div>
+      <div class="filter-bar" id="req-filter">
+        <button class="fbtn active" data-status="all">All</button>
+        <button class="fbtn" data-status="pending">Pending <span class="fcount hidden" id="fc-pending"></span></button>
+        <button class="fbtn" data-status="sent">Sent</button>
+        <button class="fbtn" data-status="rejected">Rejected</button>
+        <button class="fbtn" data-status="error">Error</button>
+      </div>
+      <div id="all-requests" class="table-wrap"></div>
+    </section>
+
+    <!-- Users (admin) -->
+    <section class="page admin-only hidden" id="page-users">
+      <div class="page-head">
+        <div class="page-head-text"><h1>Users</h1><p>Manage user accounts, roles, and request limits.</p></div>
+        <button id="add-user-btn" class="btn btn-primary">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+          Add User
+        </button>
+      </div>
+      <div id="users-table" class="table-wrap"></div>
+    </section>
+
+    <!-- API Keys (admin) -->
+    <section class="page admin-only hidden" id="page-apikeys">
+      <div class="page-head">
+        <div class="page-head-text">
+          <h1>API Keys</h1>
+          <p>Generate keys so other programs can connect to BookSeerr. Send the key as an <code>X-Api-Key</code> header (or <code>?apikey=</code>) to any <code>/api/…</code> endpoint. Keys grant full access — treat them like passwords.</p>
+          <p class="small" style="margin-top:6px">Dashboards (e.g. a homelab start page): hit <code>GET /api/dashboard</code> with your key for a one-call summary — request counts, the latest requests, and Chaptarr/Listenarr health.</p>
+        </div>
+        <button id="add-key-btn" class="btn btn-primary">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+          Generate API Key
+        </button>
+      </div>
+      <div id="apikeys-table" class="table-wrap"></div>
+    </section>
+
+    <!-- Settings (admin) -->
+    <section class="page admin-only hidden" id="page-settings">
+      <div class="page-head">
+        <div class="page-head-text">
+          <h1>Settings</h1>
+          <p>Link your downloaders here — no <code>.env</code> editing or restart needed. Values are saved on the server, so they apply on every browser and phone instantly. Anything saved here overrides the <code>.env</code> file; use "Reset to .env" to go back.</p>
+        </div>
+      </div>
+
+      <!-- Requests & Approvals -->
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Requests &amp; Approvals</div>
+            <div class="panel-sub">Choose whether requests go straight to your downloaders or wait for you</div>
+          </div>
+          <span class="src-pill" id="set-a-state">—</span>
+        </div>
+        <label class="check" style="margin:4px 0 8px"><input id="set-approve-all" type="checkbox" checked><span>Auto-approve requests from all users</span></label>
+        <div class="small muted">When this is <strong>off</strong>, new requests from regular users are held as <strong>Pending</strong> — nothing is sent to Chaptarr or Listenarr until you Approve (or Reject) them on the All Requests page. Per-user overrides (Users → Edit → Auto-approve) always win over this switch, and admins are always auto-approved.</div>
+        <div class="panel-actions">
+          <button class="btn btn-primary" id="set-a-save">Save</button>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Notifications</div>
+            <div class="panel-sub">Post to Discord (or any webhook) when requests come in</div>
+          </div>
+          <span class="src-pill" id="set-n-state">—</span>
+        </div>
+        <label class="check" style="margin:4px 0 10px"><input id="set-n-enabled" type="checkbox"><span>Send notifications</span></label>
+        <label class="field"><span>Webhook URL</span>
+          <div class="pw-wrap">
+            <input id="set-n-url" class="input" type="password" autocomplete="off" spellcheck="false" placeholder="https://discord.com/api/webhooks/…">
+            <button type="button" class="pw-toggle" data-for="set-n-url" aria-label="Show webhook URL" title="Show/hide webhook URL">
+              <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </label>
+        <div class="small muted" style="margin-bottom:10px">In Discord: <strong>Server Settings → Integrations → Webhooks → New Webhook → Copy Webhook URL</strong>. BookSeerr detects Discord automatically and sends a rich embed; any other URL receives plain JSON. Treat this URL like a password — anyone who has it can post to your channel.</div>
+        <div class="small" style="margin-bottom:6px"><strong>Notify me when a request is…</strong></div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:4px">
+          <label class="check"><input id="set-n-ev-submitted" type="checkbox" checked><span>Submitted</span></label>
+          <label class="check"><input id="set-n-ev-approved" type="checkbox" checked><span>Approved</span></label>
+          <label class="check"><input id="set-n-ev-rejected" type="checkbox" checked><span>Rejected</span></label>
+          <label class="check"><input id="set-n-ev-error" type="checkbox" checked><span>Failed</span></label>
+        </div>
+        <div class="panel-actions">
+          <button class="btn btn-ghost" id="set-n-test">Send test</button>
+          <button class="btn btn-ghost" id="set-n-reset" title="Remove the saved webhook and turn notifications off">Clear</button>
+          <button class="btn btn-primary" id="set-n-save">Save</button>
+        </div>
+        <div class="test-line hidden" id="set-n-result"></div>
+      </div>
+
+      <div class="settings-grid">
+        <!-- Chaptarr -->
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Chaptarr · eBooks</div>
+              <div class="panel-sub">Handles eBook and author requests</div>
+            </div>
+            <span class="src-pill" id="set-b-source">—</span>
+          </div>
+          <label class="field"><span>URL</span><input id="set-b-url" class="input" autocomplete="off" spellcheck="false" placeholder="http://host.docker.internal:8789"></label>
+          <label class="field"><span>API Key</span>
+            <div class="pw-wrap">
+              <input id="set-b-key" class="input" type="password" autocomplete="off" spellcheck="false" placeholder="Paste the Chaptarr API key">
+              <button type="button" class="pw-toggle" data-for="set-b-key" aria-label="Show API key" title="Show/hide API key">
+                <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </label>
+          <div class="small muted" id="set-b-keyhint">Found in Chaptarr under Settings → General → Security.</div>
+          <div class="panel-actions">
+            <button class="btn btn-ghost" id="set-b-test">Test</button>
+            <button class="btn btn-ghost" id="set-b-reset" title="Remove the app-saved values and use the .env file again">Reset to .env</button>
+            <button class="btn btn-primary" id="set-b-save">Save</button>
+          </div>
+          <div class="test-line hidden" id="set-b-result"></div>
+        </div>
+
+        <!-- Listenarr -->
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Listenarr · Audiobooks</div>
+              <div class="panel-sub">Handles audiobook requests</div>
+            </div>
+            <span class="src-pill" id="set-l-source">—</span>
+          </div>
+          <label class="field"><span>URL</span><input id="set-l-url" class="input" autocomplete="off" spellcheck="false" placeholder="http://host.docker.internal:4545"></label>
+          <label class="field"><span>API Key</span>
+            <div class="pw-wrap">
+              <input id="set-l-key" class="input" type="password" autocomplete="off" spellcheck="false" placeholder="Paste the Listenarr API key">
+              <button type="button" class="pw-toggle" data-for="set-l-key" aria-label="Show API key" title="Show/hide API key">
+                <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </label>
+          <div class="small muted" id="set-l-keyhint">Found in Listenarr under Settings → Security.</div>
+          <div class="panel-actions">
+            <button class="btn btn-ghost" id="set-l-test">Test</button>
+            <button class="btn btn-ghost" id="set-l-reset" title="Remove the app-saved values and use the .env file again">Reset to .env</button>
+            <button class="btn btn-primary" id="set-l-save">Save</button>
+          </div>
+          <div class="test-line hidden" id="set-l-result"></div>
+        </div>
+
+      </div>
+
+      <p class="small muted" style="margin-top:14px">Saved API keys are write-only for safety: this page only ever shows the last 4 characters. Leave the key field blank (or masked) to keep the stored key when saving. Changes can only be made by a signed-in admin — BookSeerr API keys can't read or modify these settings.</p>
+    </section>
+
+  </main>
+</div>
+
+<!-- ══ MOBILE BOTTOM NAV (shown ≤860px) ═════════════════════════ -->
+<nav class="mobile-nav" aria-label="Main navigation">
+  <button class="nav active" data-page="discover">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 14.14 14.14M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    Discover
+  </button>
+  <button class="nav" data-page="search">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Search
+  </button>
+  <button class="nav" data-page="requests">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+    Requests
+  </button>
+  <button class="nav admin-only hidden" data-page="all-requests">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    All
+    <span id="req-badge-m" class="nav-badge nav-badge-m hidden"></span>
+  </button>
+  <button class="nav admin-only hidden" data-page="users">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Users
+  </button>
+  <button class="nav admin-only hidden" data-page="apikeys">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+    Keys
+  </button>
+  <button class="nav admin-only hidden" data-page="settings">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Settings
+  </button>
+</nav>
+
+<!-- ══ REQUEST MODAL ════════════════════════════════════════════ -->
+<div id="request-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="req-modal-title">Request</h2>
+      <button class="icon-btn" data-close="request-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Search + pick a precise match (pre-filled with what you clicked) -->
+      <div class="searchbar req-searchbar">
+        <input id="req-search-input" class="input" placeholder="Start typing a title or author…">
+        <button id="req-search-btn" class="btn btn-primary">Search</button>
+      </div>
+      <div id="req-results" class="req-results"></div>
+
+      <!-- Selected item + options -->
+      <div class="preview hidden" id="req-preview">
+        <img id="req-image" alt="">
+        <div>
+          <div id="req-title" class="modal-title">—</div>
+          <div id="req-author" class="small">—</div>
+          <div id="req-asin" class="req-asin"></div>
+        </div>
+      </div>
+      <div class="row hidden" id="req-fields">
+        <label class="field"><span>Quality Profile</span><select id="req-quality" class="input"></select></label>
+        <label class="field" id="req-metadata-field"><span>Metadata Profile</span><select id="req-metadata" class="input"></select></label>
+      </div>
+      <label class="field hidden" id="req-root-field"><span>Root Folder</span><select id="req-root" class="input"></select></label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close="request-modal">Cancel</button>
+      <button id="submit-request" class="btn btn-primary" disabled>Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ USER MODAL ═══════════════════════════════════════════════ -->
+<div id="user-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="user-modal-title">Add User</h2>
+      <button class="icon-btn" data-close="user-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="field"><span>Username</span><input id="u-name" class="input" autocomplete="off"></label>
+      <label class="field"><span>Password</span>
+        <div class="pw-wrap">
+          <input id="u-pass" class="input" type="password" autocomplete="new-password">
+          <button type="button" class="pw-toggle" data-for="u-pass" aria-label="Show password" title="Show/hide password">
+            <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </label>
+      <div class="row">
+        <label class="field"><span>Role</span>
+          <select id="u-role" class="input">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </label>
+        <label class="field"><span>Request Limit</span><input id="u-limit" class="input" type="number" min="0" value="10"></label>
+      </div>
+      <label class="field"><span>Auto-approve requests</span>
+        <select id="u-auto" class="input">
+          <option value="default">Use global setting</option>
+          <option value="on">Always auto-approve</option>
+          <option value="off">Never — hold for admin approval</option>
+        </select>
+      </label>
+      <div class="small muted" style="margin:-6px 0 12px">Overrides the global toggle in Settings for this user. Admins are always auto-approved.</div>
+      <label class="check"><input id="u-can" type="checkbox" checked><span>Can make requests</span></label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close="user-modal">Cancel</button>
+      <button id="save-user" class="btn btn-primary">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ API KEY MODAL ════════════════════════════════════════════ -->
+<div id="apikey-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Generate API Key</h2>
+      <button class="icon-btn" data-close="apikey-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="field"><span>Name / Label</span><input id="k-name" class="input" autocomplete="off" placeholder="e.g. Home Assistant, mobile script"></label>
+      <div class="small" style="color:var(--muted)">The full key is shown in the table after it's created. You can copy it then.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close="apikey-modal">Cancel</button>
+      <button id="save-key" class="btn btn-primary">Create Key</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ACCOUNT / CHANGE PASSWORD MODAL ══════════════════════════ -->
+<div id="account-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Change Password</h2>
+      <button class="icon-btn" data-close="account-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="field"><span>Current Password</span>
+        <div class="pw-wrap">
+          <input id="acc-current" class="input" type="password" autocomplete="current-password">
+          <button type="button" class="pw-toggle" data-for="acc-current" aria-label="Show password" title="Show/hide password">
+            <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </label>
+      <label class="field"><span>New Password</span>
+        <div class="pw-wrap">
+          <input id="acc-new" class="input" type="password" autocomplete="new-password">
+          <button type="button" class="pw-toggle" data-for="acc-new" aria-label="Show password" title="Show/hide password">
+            <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </label>
+      <label class="field"><span>Confirm New Password</span>
+        <div class="pw-wrap">
+          <input id="acc-confirm" class="input" type="password" autocomplete="new-password">
+          <button type="button" class="pw-toggle" data-for="acc-confirm" aria-label="Show password" title="Show/hide password">
+            <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </label>
+      <div class="small" style="color:var(--muted)">At least 6 characters. Changing your password signs you out on every other device. Admins can also reset any user's password from the Users page.</div>
+      <hr style="border:none;border-top:1px solid var(--border2);margin:16px 0 12px">
+      <div class="small" style="color:var(--muted);margin-bottom:8px"><strong style="color:var(--text-bright)">Sessions</strong><br>Signed in somewhere you no longer trust — a lost phone, a shared computer? This revokes every sign-in except this one.</div>
+      <button id="logout-all" class="btn btn-ghost btn-sm">Sign out everywhere else</button>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close="account-modal">Cancel</button>
+      <button id="save-account" class="btn btn-primary">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/jordydabs/bookseerr/security/policy
+    about: Please don't file security problems as public issues — the policy explains how to report them privately.

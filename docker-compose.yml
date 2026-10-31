@@ -1,0 +1,50 @@
+services:
+  bookseerr:
+    build: .
+    image: bookseerr:4.10.0
+    container_name: bookseerr
+    init: true                          # real PID 1: forwards signals, reaps zombies
+    # The app gives in-flight requests up to 10s to finish on SIGTERM. Left unset, compose
+    # on this install allows ONE second before SIGKILL, which cut that short.
+    stop_grace_period: 15s
+    ports:
+      # Follows PORT from .env so changing it there actually works. Hard-coding 8099
+      # meant setting PORT=8100 produced a container that reported "healthy" (the
+      # healthcheck probes inside the container) while being unreachable from the host.
+      - "${PORT:-8099}:${PORT:-8099}"
+    env_file:
+      - .env
+    environment:
+      # If your host ./data isn't owned by uid/gid 1000, set these to match its
+      # owner (the entrypoint also chowns it, so it'll work either way).
+      PUID: "1000"
+      PGID: "1000"
+    volumes:
+      - ./data:/app/data                # the only writable path the app needs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # host.docker.internal on Linux
+    networks:
+      - bookseerr-net                   # isolated bridge, not the default network
+
+    # ── Hardening ──────────────────────────────────────────────────────────────
+    read_only: true                     # immutable container root filesystem
+    tmpfs:
+      - /tmp                            # small writable scratch (data lives on the volume)
+    security_opt:
+      - no-new-privileges:true          # processes can't gain new privileges
+    cap_drop:
+      - ALL                             # drop every Linux capability…
+    cap_add:                            # …then re-add only what the entrypoint uses
+      - CHOWN                           #   chown the data volume to PUID:PGID
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETUID                          #   su-exec drops to the unprivileged user
+      - SETGID
+      - KILL                            #   tini forwards SIGTERM to node (PUID); own PID namespace only
+    pids_limit: 256                     # bound runaway forks
+    mem_limit: 256m                   # capped 2026-09-18 (steady state ~40M)
+    restart: unless-stopped
+
+networks:
+  bookseerr-net:
+    driver: bridge

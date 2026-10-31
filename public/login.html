@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BookSeerr — Sign in</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#12131a">
+<meta name="apple-mobile-web-app-title" content="BookSeerr">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1a1d2e;--bg-sidebar:#13141f;--bg-topbar:#0f1018;
+  --bg-surface:#1e2132;--bg-raised:#252840;--bg-input:#161824;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.10);
+  --purple:#7c3aed;--purple-lt:#a78bfa;
+  --green:#22c55e;--text:#d1d5e8;--text-bright:#eef0f8;--muted:#6b7194;
+}
+html{font-family:Inter,system-ui,sans-serif;font-size:13px;background:var(--bg);color:var(--text)}
+body{min-height:100vh;display:grid;grid-template-columns:var(--sidebar-w,0) 1fr;grid-template-rows:48px 1fr}
+
+/* Fake topbar to match app */
+.topbar{
+  grid-column:1/-1;
+  display:flex;align-items:center;
+  padding:0 20px;gap:10px;
+  background:var(--bg-topbar);
+  border-bottom:1px solid var(--border);
+}
+.brand{display:flex;align-items:center;gap:9px}
+.brand-name{font-size:15px;font-weight:800;color:var(--text-bright)}
+.brand-tag{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* Center the login card */
+.login-wrap{
+  grid-column:1/-1;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.card{
+  width:min(380px,100%);
+  background:var(--bg-surface);border:1px solid var(--border);
+  border-radius:10px;padding:24px;
+  box-shadow:0 24px 60px rgba(0,0,0,.4);
+}
+.card-title{font-size:16px;font-weight:800;color:var(--text-bright);margin-bottom:3px}
+.card-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+.field{display:grid;gap:5px;margin-bottom:13px}
+.field span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.input{
+  width:100%;padding:9px 11px;
+  background:var(--bg-input);color:var(--text-bright);
+  border:1px solid var(--border2);border-radius:5px;
+  outline:none;font-size:12px;font-family:inherit;
+  transition:border-color .12s,box-shadow .12s;
+}
+.input:focus{border-color:var(--purple-lt);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+/* Password visibility toggle */
+.pw-wrap{position:relative;display:flex;align-items:center}
+.pw-wrap .input{padding-right:38px}
+.pw-toggle{position:absolute;right:9px;background:none;border:0;cursor:pointer;color:var(--muted);padding:4px;display:flex;align-items:center;justify-content:center;transition:color .12s}
+.pw-toggle:hover{color:var(--text-bright)}
+.pw-toggle svg{width:15px;height:15px;pointer-events:none}
+.pw-toggle .eye-off{display:none}
+.pw-toggle.showing .eye-on{display:none}
+.pw-toggle.showing .eye-off{display:block}
+.btn{
+  width:100%;margin-top:6px;padding:10px;border-radius:5px;border:0;
+  background:var(--purple);color:#fff;
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:background .12s;font-family:inherit;
+}
+.btn:hover{background:var(--purple-lt)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.err{
+  margin-top:12px;padding:9px 11px;
+  background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);
+  border-radius:5px;color:#f87171;font-size:11px;display:none;
+}
+/* Phones: 16px inputs stop iOS Safari from auto-zooming on focus */
+@media(max-width:860px){
+  .input{font-size:16px;padding:11px 12px}
+  .btn{padding:12px}
+  .topbar{padding-top:env(safe-area-inset-top,0px)}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
+      <rect width="64" height="64" rx="10" fill="#1e1f2e"/>
+      <path d="M14 13.5C14 10.46 16.46 8 19.5 8H47c2.76 0 5 2.24 5 5v38c0 2.76-2.24 5-5 5H19.5A5.5 5.5 0 0 1 14 50.5v-37Z" stroke="#a78bfa" stroke-width="3.2"/>
+      <path d="M22 20h20M22 28h16M22 36h18M22 44h12" stroke="#22c55e" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="brand-name">BookSeerr</div>
+      <div class="brand-tag">Ebooks &amp; Audiobooks</div>
+    </div>
+  </div>
+</header>
+
+<div class="login-wrap">
+  <div class="card">
+    <div class="card-title">Sign in</div>
+    <div class="card-sub">Enter your credentials to continue.</div>
+    <form id="login-form">
+      <label class="field"><span>Username</span><input id="username" class="input" autocomplete="username" required spellcheck="false"></label>
+      <label class="field"><span>Password</span>
+        <div class="pw-wrap">
+          <input id="password" type="password" class="input" autocomplete="current-password" required>
+          <button type="button" class="pw-toggle" id="pw-toggle-btn" aria-label="Show password" title="Show/hide password">
+            <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </label>
+      <button class="btn" type="submit" id="login-btn">Sign in</button>
+    </form>
+    <div id="err" class="err"></div>
+  </div>
+</div>
+
+<script src="/login.js"></script>
+</body>
+</html>

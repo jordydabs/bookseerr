@@ -1,0 +1,26 @@
+# ── Secrets ────────────────────────────────────────────────────────────────────
+# .env holds your Readarr/Listenarr/Google API keys, the bootstrap admin password
+# and JWT_SECRET. It must never be committed. .env.example is the safe template.
+.env
+.env.*
+!.env.example
+
+# ── Runtime state ──────────────────────────────────────────────────────────────
+# db.json contains user accounts (bcrypt hashes), every request, and your BookSeerr
+# API keys. The generated .jwt_secret lives here too.
+data/
+test/test-data*/
+
+# ── Dependencies & build noise ────────────────────────────────────────────────
+node_modules/
+*.log
+npm-debug.log*
+
+# ── OS / editor cruft ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# local pre-change backups
+backup-*/

@@ -1,0 +1,26 @@
+# deps & state — installed/created inside the image or mounted at runtime
+node_modules
+data
+
+# secrets — never bake env files into the image
+.env
+.env.*
+
+# vcs & logs
+.git
+.github
+.gitignore
+*.log
+npm-debug.log*
+
+# dev-only test harnesses + their throwaway databases (never needed in the image)
+test
+
+# build/meta files not needed at runtime (keeps the image lean & avoids leaking compose/env)
+Dockerfile
+docker-compose.yml
+.dockerignore
+*.md
+
+# local pre-change backups (kept for rollback, never needed in the image)
+backup-*

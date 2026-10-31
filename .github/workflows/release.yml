@@ -1,0 +1,117 @@
+name: Release
+
+# Publishes the GitHub release for a version tag. The notes are that version's section
+# of CHANGELOG.md plus install/upgrade steps (see .github/scripts/release-notes.js).
+#
+#   Tag it:    git tag -a v4.10.0 -m "BookSeerr v4.10.0" && git push origin v4.10.0
+#   Run it:    Actions → Release → Run workflow (creates the tag on the branch you pick)
+#   Replace:   when run by hand, an optional "Replace" tag names an older release to
+#              delete (its tag too) once the new one is published — for moving off a
+#              release that was tagged with something other than a version.
+#
+# Nothing is published unless the tag, package.json, package-lock.json, server.js and
+# docker-compose.yml all agree on the version, CHANGELOG.md has a section for it, and the
+# tests pass — so a release can't go out pointing at the wrong code.
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag, e.g. v4.10.0 (the version must match package.json)'
+        required: true
+        type: string
+      replace:
+        description: 'Optional: tag of an older release to delete (tag included) once this one is published'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Publish release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the version
+        id: ver
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          if ! printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "::error::'$TAG' is not a version tag like v4.10.0"
+            exit 1
+          fi
+          version="${TAG#v}"
+          bad=0
+          check() {
+            if [ "$2" != "$version" ]; then
+              echo "::error::$1 says '$2' but the tag is $TAG"
+              bad=1
+            fi
+          }
+          check package.json "$(node -p "require('./package.json').version")"
+          check package-lock.json "$(node -p "require('./package-lock.json').version")"
+          check 'server.js (APP_VERSION)' "$(sed -nE "s/^const APP_VERSION = '([^']+)'.*/\1/p" server.js)"
+          check 'docker-compose.yml (image tag)' "$(sed -nE 's/^[[:space:]]*image:[[:space:]]*bookseerr:([^[:space:]#]+).*/\1/p' docker-compose.yml)"
+          [ "$bad" = 0 ] || exit 1
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+      - name: Write the release notes
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: node .github/scripts/release-notes.js "$VERSION" > notes.md
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.ver.outputs.tag }}
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          flags=(--title "BookSeerr $TAG" --notes-file notes.md)
+          if [[ "$VERSION" == *-* ]]; then flags+=(--prerelease); else flags+=(--latest); fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" "${flags[@]}"
+          else
+            gh release create "$TAG" "${flags[@]}" --target "$GITHUB_SHA"
+          fi
+
+      - name: Remove the release being replaced
+        if: github.event_name == 'workflow_dispatch' && inputs.replace != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OLD_TAG: ${{ inputs.replace }}
+          NEW_TAG: ${{ steps.ver.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if ! printf '%s' "$OLD_TAG" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._-]*$'; then
+            echo "::error::'$OLD_TAG' is not a valid tag name"
+            exit 1
+          fi
+          if [ "$OLD_TAG" = "$NEW_TAG" ]; then
+            echo "::error::'$OLD_TAG' is the release that was just published"
+            exit 1
+          fi
+          gh release delete "$OLD_TAG" --cleanup-tag --yes
